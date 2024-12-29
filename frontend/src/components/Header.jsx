@@ -12,7 +12,6 @@ import { logout } from '../features/login_Slice';
 const Header = () => {
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state ) => state.login); 
-
   const handleLogout = () => {
     dispatch(logout()); 
   };

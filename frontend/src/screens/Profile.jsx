@@ -7,17 +7,15 @@ import { Form, Button, Alert, Container } from 'react-bootstrap';
 const Profile = () => {
     const dispatch = useDispatch();
     const { profileData, loading, error, successMessage } = useSelector((state) => state.update);
-    const { userInfo } = useSelector((state) => state.update);
-    const [name, setName] = useState(userInfo?.name || '');
-    const [email, setEmail] = useState(userInfo?.email || '');
-    const [password, setPassword] = useState('');
-
-    const [isEditing, setIsEditing] = useState(false);
+    const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
+    
+    // Initialize formData with userInfo values
     const [formData, setFormData] = useState({
-        name: '',
-        email: '',
+        name: userInfo?.name || '',
+        email: userInfo?.email || '',
         password: '',
     });
+    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('userInfo')
@@ -58,8 +56,8 @@ const Profile = () => {
     const handleCancel = () => {
         setIsEditing(false);
         setFormData({
-            name: profileData.name || '',
-            email: profileData.email || '',
+            name: profileData.name || userInfo?.name || '',
+            email: profileData.email || userInfo?.email || '',
             password: '',
         });
     };
@@ -122,4 +120,5 @@ const Profile = () => {
         </Container>
     );
 };
+
 export default Profile;
