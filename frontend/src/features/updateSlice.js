@@ -44,13 +44,13 @@ const updateSlice = createSlice({
     initialState: {
         profileData: null,
         loading: false,
-        error: null,
-        successMessage: null,
+        error: '',
+        successMessage: '',
     },
     reducers: {
         clearMessages: (state) => {
-            state.successMessage = null;
-            state.error = null;
+            state.successMessage = '';
+            state.error = '';
         },
     },
     extraReducers: (builder) => {
