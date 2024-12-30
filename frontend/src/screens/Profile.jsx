@@ -75,6 +75,10 @@ const Profile = () => {
         }
         setIsEditing(false);
         setIsChangingPassword(false);
+
+        // Update localStorage with new user info
+        const updatedUserInfo = { ...userInfo, name: formData.name, email: formData.email };
+        localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
     };
 
     const handleCancel = () => {

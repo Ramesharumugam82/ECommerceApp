@@ -6,10 +6,16 @@ const loadCartFromLocalStorage = () => {
     return savedCart ? JSON.parse(savedCart) : [];
 };
 
+const loadShippingAddressFromLocalStorage = () => {
+    const savedAddress = localStorage.getItem('shippingAddress');
+    return savedAddress ? JSON.parse(savedAddress) : {};
+};
+
 const cartSlice = createSlice({
     name: 'cart',
     initialState: {
         items: loadCartFromLocalStorage(), // Load initial state from local storage
+        shippingAddress: loadShippingAddressFromLocalStorage(), // Load shipping address from local storage
     },
     reducers: {
         addToCart: (state, action) => {
@@ -42,9 +48,13 @@ const cartSlice = createSlice({
             state.items = []; // Clear the cart
             localStorage.removeItem('cartItems'); // Remove from local storage
         },
+        saveShippingAddress: (state, action) => {
+            state.shippingAddress = action.payload; // Save shipping address
+            localStorage.setItem('shippingAddress', JSON.stringify(action.payload)); // Save to local storage
+        },
     },
 });
 
 // Export actions and reducer
-export const { addToCart, removeFromCart, updateCartItemQuantity, clearCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, updateCartItemQuantity, clearCart, saveShippingAddress } = cartSlice.actions;
 export default cartSlice.reducer;

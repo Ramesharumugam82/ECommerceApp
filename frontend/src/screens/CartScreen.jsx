@@ -1,8 +1,10 @@
 // src/screens/CartScreen.jsx
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { ListGroup, Button, Alert, Card } from 'react-bootstrap';
+import { ListGroup, Button, Alert, Card, Form } from 'react-bootstrap';
 import { removeFromCart, addToCart } from '../features/cartSlice'; // Import actions
+import { useNavigate } from 'react-router-dom';
+import { FaPlus, FaMinus, FaTrash } from 'react-icons/fa'; // Import icons
 
 const CartScreen = () => {
     const dispatch = useDispatch();
@@ -15,21 +17,30 @@ const CartScreen = () => {
 
     const handleIncreaseQuantity = (item) => {
         dispatch(addToCart({ ...item, quantity: 1 })); // Increase quantity
+
     };
 
     const handleDecreaseQuantity = (item) => {
         if (item.quantity > 1) {
-            dispatch(addToCart({ ...item, quantity: -1 })); // Decrease quantity
-        } else {
-            handleRemoveFromCart(item.id); // Remove item if quantity is 1
+        dispatch(addToCart({ ...item, quantity: -1 })); // Decrease quantity
         }
     };
+
+    const handleQuantityChange = (item, quantity) => {
+        dispatch(addToCart({ ...item, quantity: quantity - item.quantity })); // Set quantity
+    };
+
+    const navigate = useNavigate();
+    const handleProceedToShipping = () => {
+        navigate('/shipping');
+    }
 
     // Calculate total price
     const totalPrice = items.reduce((acc, item) => {
         const price = parseFloat(item.price); // Ensure price is a number
         return acc + (isNaN(price) ? 0 : price * item.quantity); // Handle NaN case
     }, 0);
+
 
     return (
         <div className="container mt-5">
@@ -61,23 +72,46 @@ const CartScreen = () => {
                                         </div>
                                     </div>
                                     <div className="d-flex align-items-center">
-                                        <Button variant="secondary" className="btn-sm" onClick={() => handleDecreaseQuantity(item)}>-</Button>
-                                        <span className="mx-2">{item.quantity}</span>
-                                        <Button variant="secondary" className="btn-sm" onClick={() => handleIncreaseQuantity(item)}>+</Button>
+                                        <Button variant="secondary" className="btn-sm" onClick={() => handleDecreaseQuantity(item)}>
+                                            <FaMinus />
+                                        </Button>
+                                        <Form.Select
+                                            value={item.quantity}
+                                            onChange={(e) => handleQuantityChange(item, Number(e.target.value))}
+                                            className="mx-2"
+                                            style={{ width: '60px' }}
+                                        >
+                                            {[...Array(10).keys()].map((x) => (
+                                                <option key={x + 1} value={x + 1}>
+                                                    {x + 1}
+                                                </option>
+                                            ))}
+                                        </Form.Select>
+                                        <Button variant="secondary" className="btn-sm" onClick={() => handleIncreaseQuantity(item)}>
+                                            <FaPlus />
+                                        </Button>
                                         <Button
                                             variant="danger"
                                             className="btn-sm ms-2"
                                             onClick={() => handleRemoveFromCart(item.id)}
                                         >
-                                            X
+                                            <FaTrash />
                                         </Button>
                                     </div>
                                 </ListGroup.Item>
                             );
                         })}
                     </ListGroup>
-                    <h2 className="mt-3">Total Price: ${totalPrice.toFixed(2)}</h2>
-                    <Button variant="success" className="mt-3">Proceed to Checkout</Button>
+                    <h2 className="mt-3">Total Price: ₹{totalPrice.toFixed(2)}</h2>
+                    <Button
+                        variant="success"
+                        className="mt-3"
+                        onClick={handleProceedToShipping}
+                        disabled={items.length === 0 || !userInfo} // Disable if cart is empty or user is not logged in
+                    >
+                        Proceed to Checkout
+                    </Button>
+                    {!userInfo && <Alert variant="warning" className="mt-3">Please log in to proceed to checkout.</Alert>}
                 </>
             )}
         </div>

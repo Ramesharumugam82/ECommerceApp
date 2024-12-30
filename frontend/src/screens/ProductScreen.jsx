@@ -1,11 +1,12 @@
 // src/screens/ProductScreen.jsx
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { Col, Row, Image, ListGroup, ListGroupItem, Card, Spinner, Alert, Form } from 'react-bootstrap';
+import { Link, useParams } from 'react-router-dom'
+import { Col, Row, Image, ListGroup, Card, Spinner, Alert, Form, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProduct } from '../features/productSlice';
 import { addToCart } from '../features/cartSlice'; // Import the addToCart action
 import Rating from '../components/Rating';
+import ProductCard from '../components/ProductCard'; // Import the ProductCard component
 
 const ProductScreen = () => {
   const { id } = useParams();
@@ -52,60 +53,66 @@ const ProductScreen = () => {
   }
 
   return (
-    <div>
+    <div className="container product-screen">
       <Link to="/" className='btn btn-light my-3'>Go Back</Link>
-      {alert && <Alert variant="success" className="text-center">{alert}</Alert>} {/* Display alert message */}
+      {alert && <Alert variant="success" className="text-center">{alert}</Alert>}
       <Row>
-        <Col md={6}>
-          <Image src={product.image} alt={product.name} fluid />
+        <Col xs={12} md={6} className="mb-3">
+          <Image src={product.image} alt={product.name} fluid className="product-image" />
         </Col>
-        <Col md={3}>
+        <Col xs={12} md={3} className="mb-3">
           <ListGroup variant='flush'>
-            <ListGroupItem><h3>{product.name}</h3></ListGroupItem>
-            <ListGroupItem><Rating value={product.rating} text={`${product.numReviews} reviews`} color={'#f8e825'} /></ListGroupItem>
-            <ListGroupItem><strong>Price: ${product.price}</strong></ListGroupItem>
-            <ListGroupItem>Description: {product.description}</ListGroupItem>
+            <ListGroup.Item><h3>{product.name}</h3></ListGroup.Item>
+            <ListGroup.Item><Rating value={product.rating} text={`${product.numReviews} reviews`} color={'#f8e825'} /></ListGroup.Item>
+            <ListGroup.Item><strong>Price: ₹{product.price}</strong></ListGroup.Item>
+            <ListGroup.Item>Description: {product.description}</ListGroup.Item>
           </ListGroup>
         </Col>
-        <Col md={3}>
+        <Col xs={12} md={3}>
           <Card>
             <ListGroup variant='flush'>
-              <ListGroupItem>
+              <ListGroup.Item>
                 <Row>
                   <Col>Price:</Col>
-                  <Col>${product.price}</Col>
+                  <Col>₹{product.price}</Col>
                 </Row>
-              </ListGroupItem>
-              <ListGroupItem>
+              </ListGroup.Item>
+              <ListGroup.Item>
                 <Row>
                   <Col>Status:</Col>
                   <Col>{product.countInstock > 0 ? 'In Stock' : 'Out of Stock'}</Col>
                 </Row>
-              </ListGroupItem>
-
-              <ListGroupItem>Select qty:
-                <Form.Control
-                  as="select"
-                  value={quantity}
-                  onChange={(e) => setQuantity(Number(e.target.value))}
-                >
-                  {[...Array(product.countInstock).keys()].map((x) => (
-                    <option key={x + 1} value={x + 1}>
-                      {x + 1}
-                    </option>
-                  ))}
-                </Form.Control>
-              </ListGroupItem>
-              <ListGroupItem>
-                <button
-                  className='btn-block'
+              </ListGroup.Item>
+              {product.countInstock > 0 && (
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Qty</Col>
+                    <Col>
+                      <Form.Control
+                        as="select"
+                        value={quantity}
+                        onChange={(e) => setQuantity(Number(e.target.value))}
+                      >
+                        {[...Array(product.countInstock).keys()].map((x) => (
+                          <option key={x + 1} value={x + 1}>
+                            {x + 1}
+                          </option>
+                        ))}
+                      </Form.Control>
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+              )}
+              <ListGroup.Item>
+                <Button
+                  className={`btn-success w-100 ${product.countInstock === 0 ? 'btn-danger' : ''}`}
                   type='button'
                   disabled={product.countInstock === 0}
                   onClick={handleAddToCart}
                 >
-                  Add To Cart
-                </button>
-              </ListGroupItem>
+                  {product.countInstock === 0 ? 'Out of Stock' : 'Add To Cart'}
+                </Button>
+              </ListGroup.Item>
             </ListGroup>
           </Card>
         </Col>
