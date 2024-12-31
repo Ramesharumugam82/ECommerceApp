@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProduct } from '../features/productSlice';
 import { addToCart } from '../features/cartSlice'; // Import the addToCart action
 import Rating from '../components/Rating';
-import ProductCard from '../components/ProductCard'; // Import the ProductCard component
 
 const ProductScreen = () => {
   const { id } = useParams();

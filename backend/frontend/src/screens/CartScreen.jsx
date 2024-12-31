@@ -69,6 +69,7 @@ const CartScreen = () => {
                                         <div>
                                             <div>{item.name}</div>
                                             <div>${isNaN(price) ? "N/A" : price.toFixed(2)}</div> {/* Handle NaN case */}
+                                            <div>{item.description}</div>
                                         </div>
                                     </div>
                                     <div className="d-flex align-items-center">
@@ -79,7 +80,6 @@ const CartScreen = () => {
                                             value={item.quantity}
                                             onChange={(e) => handleQuantityChange(item, Number(e.target.value))}
                                             className="mx-2"
-                                            style={{ width: '60px' }}
                                         >
                                             {[...Array(10).keys()].map((x) => (
                                                 <option key={x + 1} value={x + 1}>
@@ -108,6 +108,7 @@ const CartScreen = () => {
                         className="mt-3"
                         onClick={handleProceedToShipping}
                         disabled={items.length === 0 || !userInfo} // Disable if cart is empty or user is not logged in
+
                     >
                         Proceed to Checkout
                     </Button>

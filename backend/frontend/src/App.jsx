@@ -10,6 +10,7 @@ import CartScreen from './screens/CartScreen';
 import LoginForm from './screens/LoginForm';
 import Profile from './screens/Profile';
 import ShipingScreen from './screens/ShippingScreen';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
   return (

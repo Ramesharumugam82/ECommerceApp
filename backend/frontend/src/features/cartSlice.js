@@ -1,4 +1,3 @@
-// src/features/cartSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
 const loadCartFromLocalStorage = () => {
@@ -9,6 +8,11 @@ const loadCartFromLocalStorage = () => {
 const loadShippingAddressFromLocalStorage = () => {
     const savedAddress = localStorage.getItem('shippingAddress');
     return savedAddress ? JSON.parse(savedAddress) : {};
+};
+
+const saveCartToLocalStorage = (cartItems) => {
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    window.dispatchEvent(new Event('cartItemsUpdated'));
 };
 
 const cartSlice = createSlice({
@@ -26,27 +30,28 @@ const cartSlice = createSlice({
             } else {
                 state.items.push(item); // Add new item to cart
             }
-            localStorage.setItem('cartItems', JSON.stringify(state.items)); // Save to local storage
+            saveCartToLocalStorage(state.items); // Save to local storage
         },
         removeFromCart: (state, action) => {
             const id = action.payload;
             state.items = state.items.filter((item) => item.id !== id); // Remove item from cart
-            localStorage.setItem('cartItems', JSON.stringify(state.items)); // Save to local storage
+            saveCartToLocalStorage(state.items); // Save to local storage
         },
         updateCartItemQuantity: (state, action) => {
             const { id, quantity } = action.payload;
             const existingItem = state.items.find((x) => x.id === id);
             if (existingItem) {
-                existingItem.quantity += quantity; // Update quantity
+                existingItem.quantity = quantity; // Update quantity
                 if (existingItem.quantity <= 0) {
                     state.items = state.items.filter((item) => item.id !== id); // Remove item if quantity is 0 or less
                 }
             }
-            localStorage.setItem('cartItems', JSON.stringify(state.items)); // Save to local storage
+            saveCartToLocalStorage(state.items); // Save to local storage
         },
         clearCart: (state) => {
             state.items = []; // Clear the cart
             localStorage.removeItem('cartItems'); // Remove from local storage
+            window.dispatchEvent(new Event('cartItemsUpdated'));
         },
         saveShippingAddress: (state, action) => {
             state.shippingAddress = action.payload; // Save shipping address

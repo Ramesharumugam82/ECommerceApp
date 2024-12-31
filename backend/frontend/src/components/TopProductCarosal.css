@@ -1,0 +1,22 @@
+.top-product-carousel {
+  max-width:90%; /* Adjust the width as needed */
+  margin: 0 auto; /* Center the carousel */
+}
+
+.carousel-image-wrapper {
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f9fa; /* Light background color */
+  border-radius: 50px;
+}
+
+.carousel-image {
+  height: 300px;
+  min-width: 60%;
+  object-fit:contain; /* Ensure the image covers the entire area */
+}
+p{
+   color: #23272D;
+}
